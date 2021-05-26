@@ -17,13 +17,16 @@ func main() {
 	// Handler
 	hh := handlers.NewHello(l)
 	gh := handlers.NewGoodbye(l)
+	ph := handlers.NewProducts(l)
 
 	// ServeMux is an HTTP request multiplexer.
 	// It matches the URL of each incoming request against a list of registered patterns
 	// and calls the handler for the pattern that most closely matches the URL.
 	sm := http.NewServeMux()
-	sm.Handle("/", hh)
+	sm.Handle("/hello", hh)
 	sm.Handle("/goodbye", gh)
+
+	sm.Handle("/", ph)
 
 	// A Server defines parameters for running an HTTP server. The zero value for Server is a valid configuration.
 	// https://golang.org/pkg/net/http/#Server
