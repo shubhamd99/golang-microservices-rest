@@ -14,6 +14,7 @@ func main() {
 
 	// Logger
 	l := log.New(os.Stdout, "product-api ", log.LstdFlags) // Ex. product-api 2021/05/26 22:44:43 Hello World
+
 	// Handler
 	hh := handlers.NewHello(l)
 	gh := handlers.NewGoodbye(l)
@@ -23,11 +24,13 @@ func main() {
 	// It matches the URL of each incoming request against a list of registered patterns
 	// and calls the handler for the pattern that most closely matches the URL.
 	sm := http.NewServeMux()
+	// create a new serve mux and register the handlers
 	sm.Handle("/hello", hh)
 	sm.Handle("/goodbye", gh)
 
 	sm.Handle("/", ph)
 
+	// create a new server
 	// A Server defines parameters for running an HTTP server. The zero value for Server is a valid configuration.
 	// https://golang.org/pkg/net/http/#Server
 	s := &http.Server{
@@ -41,6 +44,7 @@ func main() {
 	// Goroutines
 	// This new goroutine will execute concurrently with the calling one.
 	go func() {
+		// start the server
 		err := s.ListenAndServe()
 		if err != nil {
 			// Fatal is equivalent to Print() followed by a call to os.Exit(1)
@@ -54,6 +58,7 @@ func main() {
 	signal.Notify(sigChan, os.Kill)
 
 	// Receive from sigChan, and assign value to sig variable.
+	// Block until a signal is received.
 	sig := <- sigChan
 	l.Println("Received terminate, graceful shutdown", sig)
 
@@ -61,7 +66,7 @@ func main() {
 	// and other request-scoped values across API boundaries and between processes.
 	tc, _ := context.WithTimeout(context.Background(), 30 *time.Second) // 30 seconds timeout
 
-	// Shutdown gracefully shuts down the server without interrupting any active connections.
+	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
 	// https://golang.org/pkg/net/http/#Server.Shutdown
 	s.Shutdown(tc)
 }
