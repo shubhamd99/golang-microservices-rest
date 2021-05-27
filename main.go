@@ -3,6 +3,8 @@ package main
 import (
 	"GoMicroservices/handlers"
 	"context"
+	"github.com/gorilla/mux"
+	"github.com/nicholasjackson/env"
 	"log"
 	"net/http"
 	"os"
@@ -10,31 +12,38 @@ import (
 	"time"
 )
 
+var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for the server")
+
 func main() {
+
+	env.Parse()
 
 	// Logger
 	l := log.New(os.Stdout, "product-api ", log.LstdFlags) // Ex. product-api 2021/05/26 22:44:43 Hello World
 
 	// Handler
-	hh := handlers.NewHello(l)
-	gh := handlers.NewGoodbye(l)
 	ph := handlers.NewProducts(l)
 
 	// ServeMux is an HTTP request multiplexer.
 	// It matches the URL of each incoming request against a list of registered patterns
 	// and calls the handler for the pattern that most closely matches the URL.
-	sm := http.NewServeMux()
-	// create a new serve mux and register the handlers
-	sm.Handle("/hello", hh)
-	sm.Handle("/goodbye", gh)
+	// create a new server mux and register the handlers
+	sm := mux.NewRouter()
 
-	sm.Handle("/", ph)
+	getRouter := sm.Methods(http.MethodGet).Subrouter()
+	getRouter.HandleFunc("/", ph.GetProducts)
+
+	putRouter := sm.Methods(http.MethodPut).Subrouter()
+	putRouter.HandleFunc("/{id:[0-9]+}", ph.UpdateProducts)
+
+	postRouter := sm.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/", ph.AddProduct)
 
 	// create a new server
 	// A Server defines parameters for running an HTTP server. The zero value for Server is a valid configuration.
 	// https://golang.org/pkg/net/http/#Server
 	s := &http.Server{
-		Addr: ":9090",
+		Addr: *bindAddress,
 		Handler: sm,
 		IdleTimeout: 120 *time.Second,
 		ReadTimeout: 1 *time.Second,
@@ -64,9 +73,9 @@ func main() {
 
 	// Package context defines the Context type, which carries deadlines, cancellation signals,
 	// and other request-scoped values across API boundaries and between processes.
-	tc, _ := context.WithTimeout(context.Background(), 30 *time.Second) // 30 seconds timeout
+	ctx, _ := context.WithTimeout(context.Background(), 30 *time.Second) // 30 seconds timeout
 
 	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
 	// https://golang.org/pkg/net/http/#Server.Shutdown
-	s.Shutdown(tc)
+	s.Shutdown(ctx)
 }
