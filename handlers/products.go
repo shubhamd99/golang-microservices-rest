@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"GoMicroservices/data"
+	"context"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -30,19 +31,13 @@ func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request)  {
 func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle POST Product")
 
-	// Accessing Product Struct
-	prod := &data.Product{}
-
-	err := prod.FromJSON(r.Body)
-	if err != nil {
-		http.Error(rw, "Unable to marshal json", http.StatusBadRequest)
-		return
-	}
-	p.l.Printf("Prod: %#v", prod)
-	data.AddProduct(prod)
+	// func (Context) Value(key interface{}) interface{}
+	prod := r.Context().Value(data.KeyProduct{}).(data.Product)
+	data.AddProduct(&prod)
+	p.l.Printf("Prod POST: %#v", &prod)
 }
 
-func (p *Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
+func (p Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -51,17 +46,10 @@ func (p *Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	p.l.Println("Handle PUT Product", id)
+	// func (Context) Value(key interface{}) interface{}
+	prod := r.Context().Value(data.KeyProduct{}).(data.Product)
 
-	// Accessing Product Struct
-	prod := &data.Product{}
-
-	err = prod.FromJSON(r.Body)
-	if err != nil {
-		http.Error(rw, "Unable to marshal json", http.StatusBadRequest)
-		return
-	}
-
-	err = data.UpdateProduct(id, prod)
+	err = data.UpdateProduct(id, &prod)
 	if err == data.ErrProductNotFound {
 		http.Error(rw, "Product Not Found", http.StatusNotFound)
 		return
@@ -71,4 +59,25 @@ func (p *Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "Product Not Found", http.StatusInternalServerError)
 		return
 	}
+}
+
+func (p Products) MiddlewareProductValidation(next http.Handler) http.Handler {
+	return http.HandlerFunc(func (rw http.ResponseWriter, r *http.Request) {
+		prod := data.Product{}
+
+		err := prod.FromJSON(r.Body)
+		if err != nil {
+			p.l.Println("[ERROR] deserializing product", err)
+			http.Error(rw, "Error reading product", http.StatusBadRequest)
+			return
+		}
+
+		// Package context defines the Context type, which carries deadlines, cancellation signals,
+		// and other request-scoped values across API boundaries and between processes.
+		// add the product to the context
+		ctx := context.WithValue(r.Context(), data.KeyProduct{}, prod)
+		r = r.WithContext(ctx)
+
+		next.ServeHTTP(rw, r)
+	})
 }

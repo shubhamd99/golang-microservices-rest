@@ -7,6 +7,9 @@ import (
 	"time"
 )
 
+// KeyProduct Key to access context
+type KeyProduct struct{}
+
 // Product defines the structure for an API product
 type Product struct {
 	ID          int     `json:"id"`

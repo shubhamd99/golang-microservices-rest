@@ -1,7 +1,7 @@
 module GoMicroservices
 
 // This module will keep a record of all the packages and their version used in the project. It is similar to package.json in nodejs.
-// CMD: go mod init go-env-ways
+// CMD: go mod init GoMicroservices
 
 go 1.15
 
