@@ -22,7 +22,7 @@ OR
 go get -u github.com/go-swagger/go-swagger/cmd/swagger
 ```
 
-* Generate API Client with Swagger
+* Generate API Client with Swagger (It will create client inside client folder)
 ```
 swagger generate client -f ./swagger.yaml
 
