@@ -1,8 +1,10 @@
 package main
 
 import (
+	"GoMicroservices/data"
 	"GoMicroservices/handlers"
 	"context"
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 	"github.com/nicholasjackson/env"
 	"log"
@@ -20,9 +22,10 @@ func main() {
 
 	// Logger
 	l := log.New(os.Stdout, "product-api ", log.LstdFlags) // Ex. product-api 2021/05/26 22:44:43 Hello World
+	v := data.NewValidation()
 
 	// Handler
-	ph := handlers.NewProducts(l)
+	ph := handlers.NewProducts(l, v)
 
 	// ServeMux is an HTTP request multiplexer.
 	// It matches the URL of each incoming request against a list of registered patterns
@@ -30,29 +33,41 @@ func main() {
 	// create a new server mux and register the handlers
 	sm := mux.NewRouter()
 
-	getRouter := sm.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/", ph.GetProducts)
+	getR := sm.Methods(http.MethodGet).Subrouter()
+	getR.HandleFunc("/", ph.ListAll)
+	getR.HandleFunc("/products/{id:[0-9]+}", ph.ListSingle)
 
-	putRouter := sm.Methods(http.MethodPut).Subrouter()
-	putRouter.HandleFunc("/{id:[0-9]+}", ph.UpdateProducts)
-	putRouter.Use(ph.MiddlewareProductValidation)
+	putR := sm.Methods(http.MethodPut).Subrouter()
+	putR.HandleFunc("/products", ph.Update)
+	putR.Use(ph.MiddlewareValidateProduct)
 
-	postRouter := sm.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/", ph.AddProduct)
-	postRouter.Use(ph.MiddlewareProductValidation)
+	postR := sm.Methods(http.MethodPost).Subrouter()
+	postR.HandleFunc("/products", ph.Create)
+	postR.Use(ph.MiddlewareValidateProduct)
+
+	deleteR := sm.Methods(http.MethodDelete).Subrouter()
+	deleteR.HandleFunc("/products/{id:[0-9]+}", ph.Delete)
+
+	// handler for documentation
+	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
+	sh := middleware.Redoc(opts, nil)
+
+	getR.Handle("/docs", sh)
+	getR.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
 	// create a new server
 	// A Server defines parameters for running an HTTP server. The zero value for Server is a valid configuration.
 	// https://golang.org/pkg/net/http/#Server
 	s := &http.Server{
-		Addr: *bindAddress,
-		Handler: sm,
-		IdleTimeout: 120 *time.Second,
-		ReadTimeout: 1 *time.Second,
-		WriteTimeout: 1 *time.Second,
+		Addr:         *bindAddress,      // configure the bind address
+		Handler:      sm,                // set the default handler
+		ErrorLog:     l,                 // set the logger for the server
+		ReadTimeout:  5 * time.Second,   // max time to read request from the client
+		WriteTimeout: 10 * time.Second,  // max time to write response to the client
+		IdleTimeout:  120 * time.Second, // max time for connections using TCP Keep-Alive
 	}
 
-	// Goroutines
+	// Goroutines Function to Start the Server
 	// This new goroutine will execute concurrently with the calling one.
 	go func() {
 		// start the server
@@ -63,21 +78,16 @@ func main() {
 		}
 	}()
 
-	sigChan := make(chan os.Signal)
-	// Signal channel will broadcast the message on sigChannel whenever operating system kill or Interrupt command is received
-	signal.Notify(sigChan, os.Interrupt)
-	signal.Notify(sigChan, os.Kill)
+	// trap sigterm or interupt and gracefully shutdown the server
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	signal.Notify(c, os.Kill)
 
-	// Receive from sigChan, and assign value to sig variable.
 	// Block until a signal is received.
-	sig := <- sigChan
-	l.Println("Received terminate, graceful shutdown", sig)
-
-	// Package context defines the Context type, which carries deadlines, cancellation signals,
-	// and other request-scoped values across API boundaries and between processes.
-	ctx, _ := context.WithTimeout(context.Background(), 30 *time.Second) // 30 seconds timeout
+	sig := <-c
+	log.Println("Got signal:", sig)
 
 	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
-	// https://golang.org/pkg/net/http/#Server.Shutdown
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	s.Shutdown(ctx)
 }

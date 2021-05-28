@@ -8,11 +8,19 @@
 
 * Docs - https://golang.org/doc/
 
-* Dowload Go - https://golang.org/doc/install
-
 * Download Gorilla `go get github.com/gorilla/mux` - https://www.gorillatoolkit.org/
 
 * Microservice architecture, or simply microservices, is a distinctive method of developing software systems that tries to focus on building single-function modules with well-defined interfaces and operations. The trend has grown popular in recent years as Enterprises look to become more Agile and move towards a DevOps and continuous testing.
+
+* Swagger
+```
+brew tap go-swagger/go-swagger
+brew install go-swagger
+
+OR 
+
+go get -u github.com/go-swagger/go-swagger/cmd/swagger
+```
 
 ###### Advantages
 
@@ -28,12 +36,6 @@
 ###### Tips
 
 1. We cannot declare unused variables, go will throw compliation error
-
-###### Plugins used for VSCode
-
-1. Go - https://marketplace.visualstudio.com/items?itemName=golang.Go
-2. Docker - https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker
-3. Live Share - https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare
 
 ###### Run
 
