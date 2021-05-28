@@ -6,13 +6,12 @@ package products
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	models2 "GoMicroservices/sdk/models"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-
-	"GoMicroservices/models"
 )
 
 // CreateProductReader is a Reader for the CreateProduct structure.
@@ -56,19 +55,19 @@ func NewCreateProductOK() *CreateProductOK {
 Data structure representing a single product
 */
 type CreateProductOK struct {
-	Payload *models.Product
+	Payload *models2.Product
 }
 
 func (o *CreateProductOK) Error() string {
 	return fmt.Sprintf("[POST /products][%d] createProductOK  %+v", 200, o.Payload)
 }
-func (o *CreateProductOK) GetPayload() *models.Product {
+func (o *CreateProductOK) GetPayload() *models2.Product {
 	return o.Payload
 }
 
 func (o *CreateProductOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.Product)
+	o.Payload = new(models2.Product)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -88,19 +87,19 @@ func NewCreateProductUnprocessableEntity() *CreateProductUnprocessableEntity {
 Validation errors defined as an array of strings
 */
 type CreateProductUnprocessableEntity struct {
-	Payload *models.ValidationError
+	Payload *models2.ValidationError
 }
 
 func (o *CreateProductUnprocessableEntity) Error() string {
 	return fmt.Sprintf("[POST /products][%d] createProductUnprocessableEntity  %+v", 422, o.Payload)
 }
-func (o *CreateProductUnprocessableEntity) GetPayload() *models.ValidationError {
+func (o *CreateProductUnprocessableEntity) GetPayload() *models2.ValidationError {
 	return o.Payload
 }
 
 func (o *CreateProductUnprocessableEntity) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.ValidationError)
+	o.Payload = new(models2.ValidationError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -120,19 +119,19 @@ func NewCreateProductNotImplemented() *CreateProductNotImplemented {
 Generic error message returned as a string
 */
 type CreateProductNotImplemented struct {
-	Payload *models.GenericError
+	Payload *models2.GenericError
 }
 
 func (o *CreateProductNotImplemented) Error() string {
 	return fmt.Sprintf("[POST /products][%d] createProductNotImplemented  %+v", 501, o.Payload)
 }
-func (o *CreateProductNotImplemented) GetPayload() *models.GenericError {
+func (o *CreateProductNotImplemented) GetPayload() *models2.GenericError {
 	return o.Payload
 }
 
 func (o *CreateProductNotImplemented) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GenericError)
+	o.Payload = new(models2.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

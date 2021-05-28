@@ -6,13 +6,12 @@ package products
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	models2 "GoMicroservices/sdk/models"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-
-	"GoMicroservices/models"
 )
 
 // DeleteProductReader is a Reader for the DeleteProduct structure.
@@ -77,19 +76,19 @@ func NewDeleteProductNotFound() *DeleteProductNotFound {
 Generic error message returned as a string
 */
 type DeleteProductNotFound struct {
-	Payload *models.GenericError
+	Payload *models2.GenericError
 }
 
 func (o *DeleteProductNotFound) Error() string {
 	return fmt.Sprintf("[DELETE /products/{id}][%d] deleteProductNotFound  %+v", 404, o.Payload)
 }
-func (o *DeleteProductNotFound) GetPayload() *models.GenericError {
+func (o *DeleteProductNotFound) GetPayload() *models2.GenericError {
 	return o.Payload
 }
 
 func (o *DeleteProductNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GenericError)
+	o.Payload = new(models2.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -109,19 +108,19 @@ func NewDeleteProductNotImplemented() *DeleteProductNotImplemented {
 Generic error message returned as a string
 */
 type DeleteProductNotImplemented struct {
-	Payload *models.GenericError
+	Payload *models2.GenericError
 }
 
 func (o *DeleteProductNotImplemented) Error() string {
 	return fmt.Sprintf("[DELETE /products/{id}][%d] deleteProductNotImplemented  %+v", 501, o.Payload)
 }
-func (o *DeleteProductNotImplemented) GetPayload() *models.GenericError {
+func (o *DeleteProductNotImplemented) GetPayload() *models2.GenericError {
 	return o.Payload
 }
 
 func (o *DeleteProductNotImplemented) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GenericError)
+	o.Payload = new(models2.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

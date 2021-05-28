@@ -6,13 +6,12 @@ package products
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	models2 "GoMicroservices/sdk/models"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-
-	"GoMicroservices/models"
 )
 
 // ListSingleProductReader is a Reader for the ListSingleProduct structure.
@@ -50,19 +49,19 @@ func NewListSingleProductOK() *ListSingleProductOK {
 Data structure representing a single product
 */
 type ListSingleProductOK struct {
-	Payload *models.Product
+	Payload *models2.Product
 }
 
 func (o *ListSingleProductOK) Error() string {
 	return fmt.Sprintf("[GET /products/{id}][%d] listSingleProductOK  %+v", 200, o.Payload)
 }
-func (o *ListSingleProductOK) GetPayload() *models.Product {
+func (o *ListSingleProductOK) GetPayload() *models2.Product {
 	return o.Payload
 }
 
 func (o *ListSingleProductOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.Product)
+	o.Payload = new(models2.Product)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -82,19 +81,19 @@ func NewListSingleProductNotFound() *ListSingleProductNotFound {
 Generic error message returned as a string
 */
 type ListSingleProductNotFound struct {
-	Payload *models.GenericError
+	Payload *models2.GenericError
 }
 
 func (o *ListSingleProductNotFound) Error() string {
 	return fmt.Sprintf("[GET /products/{id}][%d] listSingleProductNotFound  %+v", 404, o.Payload)
 }
-func (o *ListSingleProductNotFound) GetPayload() *models.GenericError {
+func (o *ListSingleProductNotFound) GetPayload() *models2.GenericError {
 	return o.Payload
 }
 
 func (o *ListSingleProductNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GenericError)
+	o.Payload = new(models2.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

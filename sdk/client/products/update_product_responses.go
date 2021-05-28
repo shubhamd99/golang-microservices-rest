@@ -6,13 +6,12 @@ package products
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	models2 "GoMicroservices/sdk/models"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-
-	"GoMicroservices/models"
 )
 
 // UpdateProductReader is a Reader for the UpdateProduct structure.
@@ -77,19 +76,19 @@ func NewUpdateProductNotFound() *UpdateProductNotFound {
 Generic error message returned as a string
 */
 type UpdateProductNotFound struct {
-	Payload *models.GenericError
+	Payload *models2.GenericError
 }
 
 func (o *UpdateProductNotFound) Error() string {
 	return fmt.Sprintf("[PUT /products][%d] updateProductNotFound  %+v", 404, o.Payload)
 }
-func (o *UpdateProductNotFound) GetPayload() *models.GenericError {
+func (o *UpdateProductNotFound) GetPayload() *models2.GenericError {
 	return o.Payload
 }
 
 func (o *UpdateProductNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.GenericError)
+	o.Payload = new(models2.GenericError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -109,19 +108,19 @@ func NewUpdateProductUnprocessableEntity() *UpdateProductUnprocessableEntity {
 Validation errors defined as an array of strings
 */
 type UpdateProductUnprocessableEntity struct {
-	Payload *models.ValidationError
+	Payload *models2.ValidationError
 }
 
 func (o *UpdateProductUnprocessableEntity) Error() string {
 	return fmt.Sprintf("[PUT /products][%d] updateProductUnprocessableEntity  %+v", 422, o.Payload)
 }
-func (o *UpdateProductUnprocessableEntity) GetPayload() *models.ValidationError {
+func (o *UpdateProductUnprocessableEntity) GetPayload() *models2.ValidationError {
 	return o.Payload
 }
 
 func (o *UpdateProductUnprocessableEntity) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.ValidationError)
+	o.Payload = new(models2.ValidationError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

@@ -6,6 +6,7 @@ package products
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	models2 "GoMicroservices/sdk/models"
 	"context"
 	"net/http"
 	"time"
@@ -14,8 +15,6 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-
-	"GoMicroservices/models"
 )
 
 // NewUpdateProductParams creates a new UpdateProductParams object,
@@ -66,7 +65,7 @@ type UpdateProductParams struct {
 	     Product data structure to Update or Create.
 	Note: the id field is ignored by update and create operations
 	*/
-	Body *models.Product
+	Body *models2.Product
 
 	timeout    time.Duration
 	Context    context.Context
@@ -122,13 +121,13 @@ func (o *UpdateProductParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the update product params
-func (o *UpdateProductParams) WithBody(body *models.Product) *UpdateProductParams {
+func (o *UpdateProductParams) WithBody(body *models2.Product) *UpdateProductParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the update product params
-func (o *UpdateProductParams) SetBody(body *models.Product) {
+func (o *UpdateProductParams) SetBody(body *models2.Product) {
 	o.Body = body
 }
 

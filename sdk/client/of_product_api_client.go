@@ -6,11 +6,10 @@ package client
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	products2 "GoMicroservices/sdk/client/products"
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-
-	"GoMicroservices/client/products"
 )
 
 // Default of product API HTTP client.
@@ -55,7 +54,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *OfProductA
 
 	cli := new(OfProductAPI)
 	cli.Transport = transport
-	cli.Products = products.New(transport, formats)
+	cli.Products = products2.New(transport, formats)
 	return cli
 }
 
@@ -100,7 +99,7 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // OfProductAPI is a client for of product API
 type OfProductAPI struct {
-	Products products.ClientService
+	Products products2.ClientService
 
 	Transport runtime.ClientTransport
 }

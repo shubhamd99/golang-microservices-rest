@@ -6,13 +6,12 @@ package products
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	models2 "GoMicroservices/sdk/models"
 	"fmt"
 	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-
-	"GoMicroservices/models"
 )
 
 // ListProductsReader is a Reader for the ListProducts structure.
@@ -44,13 +43,13 @@ func NewListProductsOK() *ListProductsOK {
 A list of products
 */
 type ListProductsOK struct {
-	Payload []*models.Product
+	Payload []*models2.Product
 }
 
 func (o *ListProductsOK) Error() string {
 	return fmt.Sprintf("[GET /products][%d] listProductsOK  %+v", 200, o.Payload)
 }
-func (o *ListProductsOK) GetPayload() []*models.Product {
+func (o *ListProductsOK) GetPayload() []*models2.Product {
 	return o.Payload
 }
 
