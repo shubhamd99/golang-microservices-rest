@@ -22,6 +22,12 @@ OR
 go get -u github.com/go-swagger/go-swagger/cmd/swagger
 ```
 
+* Generate API Client with Swagger
+```
+swagger generate client -f ./swagger.yaml
+
+```
+
 ###### Advantages
 
 1. Developed at Google
